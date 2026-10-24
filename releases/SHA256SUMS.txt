@@ -1,0 +1,1 @@
+7dd98bfc69fd2f8a4bd45071bdb8dacbd61b25e9549c244cff30f140f3f721bc  terrasteps-milestone30-v0.3.0-arm64-v8a-release.apk

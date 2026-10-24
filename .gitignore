@@ -1,0 +1,46 @@
+# Secrets & Environment (NEVER commit credentials — see SECURITY.md)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jks
+*.keystore
+**/service_role*
+
+# Heavy files & Google Drive local cache (stored in Google Drive: TerraSteps - FYP)
+.drive_cache/
+.drive_upload_tmp/
+*.apk
+!releases/
+!releases/*.apk
+!releases/*.txt
+*.aab
+*.ipa
+*.zip
+*.tar.gz
+*.sqlite
+*.db
+
+# Flutter / Dart build artifacts
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+**/build/
+apps/mobile/android/
+apps/mobile/ios/
+apps/mobile/linux/
+apps/mobile/macos/
+apps/mobile/windows/
+apps/mobile/web/
+
+# Node / Workbench artifacts
+node_modules/
+dist/
+.vite/
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/

@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrastep.dev/contracts/tracker-event.schema.json",
+  "title": "TrackerEvent",
+  "description": "The event stream from the native Kotlin tracker to the Flutter UI. Student A produces these; Student B consumes them. Neither side may add, rename or remove a variant without a PR that changes this file first. Source: Terrastep plan section 13 (sampling states) and section 14 (client architecture).",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/SessionStarted" },
+    { "$ref": "#/$defs/LocationSample" },
+    { "$ref": "#/$defs/MotionUpdate" },
+    { "$ref": "#/$defs/SessionPaused" },
+    { "$ref": "#/$defs/SessionResumed" },
+    { "$ref": "#/$defs/SessionFinished" },
+    { "$ref": "#/$defs/TrackingInterrupted" }
+  ],
+  "$defs": {
+    "SessionId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Client-generated session UUID. The server issues its own session id on POST /v1/sessions; carry both and never conflate them."
+    },
+    "MonotonicMs": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Milliseconds from an unspecified origin that never goes backwards, e.g. Android elapsedRealtimeNanos/1e6. Use this for ALL durations. A wall clock can be changed by the user and must never be used for elapsed time."
+    },
+    "UtcIso": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$",
+      "description": "UTC instant, always with a trailing Z. Never a local time, never an offset."
+    },
+    "SamplingState": {
+      "type": "string",
+      "enum": ["idle", "moving", "boundary", "stationary", "screen_off", "finished"],
+      "description": "The six states from plan section 13. 'boundary' means adjacent fixes and their uncertainty disagree about the cell; competitive attribution must be withheld, not guessed."
+    },
+    "InterruptionReason": {
+      "type": "string",
+      "enum": [
+        "os_killed_service",
+        "permission_revoked",
+        "gps_disabled",
+        "approximate_location_only",
+        "device_reboot",
+        "battery_saver_restriction",
+        "no_step_sensor",
+        "unknown"
+      ],
+      "description": "Plan section 13: a blocked or stopped service must produce an honest interruption notice, never fabricated continuity. This enum is that notice."
+    },
+    "SessionStarted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "started_at", "elapsed_ms", "rule_version"],
+      "properties": {
+        "type": { "const": "session_started" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "started_at": { "$ref": "#/$defs/UtcIso" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "rule_version": {
+          "type": "string",
+          "description": "Scoring ruleset this session will be judged under. Immutable once issued. See plan section 9."
+        },
+        "step_counter_baseline": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "Cumulative step counter value at session start. Null when the device has no step sensor. A cumulative counter can reset after reboot and is NOT today's total - always pair it with boot_id."
+        },
+        "boot_id": {
+          "type": ["string", "null"],
+          "description": "Identifies the current device boot. If this changes between two readings, the counter reset and the delta must be discarded, not credited."
+        }
+      }
+    },
+    "LocationSample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms", "captured_at", "latitude", "longitude", "accuracy_m", "sampling_state"],
+      "properties": {
+        "type": { "const": "location_sample" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "captured_at": { "$ref": "#/$defs/UtcIso" },
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "accuracy_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Reported horizontal accuracy in metres. Plan section 18: treat this as uncertainty, not as a boundary guarantee. When adjacent fixes disagree about the cell, withhold attribution."
+        },
+        "altitude_m": { "type": ["number", "null"] },
+        "speed_mps": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Metres per second. Null when unavailable. Do NOT infer from consecutive positions - the phone reports it."
+        },
+        "bearing_deg": { "type": ["number", "null"], "minimum": 0, "maximum": 360 },
+        "sampling_state": { "$ref": "#/$defs/SamplingState" },
+        "provider": {
+          "type": "string",
+          "enum": ["fused", "gps", "network", "passive"],
+          "description": "Which source produced the fix. Needed to reason about budget-phone GPS quality by tier."
+        }
+      }
+    },
+    "MotionUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms", "step_delta", "boot_id"],
+      "properties": {
+        "type": { "const": "motion_update" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "step_delta": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Steps since the previous MotionUpdate. Plan section 12: never assign a large delta to whichever cell happens to be current when a delayed callback arrives. If the delta is implausible for the elapsed window, leave it unassigned to cells."
+        },
+        "boot_id": {
+          "type": "string",
+          "description": "Must match the boot_id of the preceding event. A mismatch means the counter reset; discard the delta."
+        },
+        "motion_class": {
+          "type": ["string", "null"],
+          "enum": ["still", "walking", "running", "in_vehicle", "unknown", null],
+          "description": "On-device activity classification when available. Used as ONE anti-cheat signal among several - never as sole proof."
+        },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "SessionPaused": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms"],
+      "properties": {
+        "type": { "const": "session_paused" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "reason": { "type": "string", "enum": ["user", "stationary_timeout", "system"] }
+      }
+    },
+    "SessionResumed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms"],
+      "properties": {
+        "type": { "const": "session_resumed" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" }
+      }
+    },
+    "SessionFinished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms", "finished_at", "totals", "durable"],
+      "properties": {
+        "type": { "const": "session_finished" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "finished_at": { "$ref": "#/$defs/UtcIso" },
+        "totals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["elapsed_s", "moving_s", "paused_s", "distance_m", "steps"],
+          "properties": {
+            "elapsed_s": { "type": "integer", "minimum": 0 },
+            "moving_s": { "type": "integer", "minimum": 0 },
+            "paused_s": { "type": "integer", "minimum": 0 },
+            "distance_m": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Metres. Base unit is always metres; the UI renders user-selected units. Computed from filtered valid positions only - never by summing stationary GPS jitter."
+            },
+            "steps": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "Null if no step sensor. Estimated-from-distance steps must NEVER be placed here; they belong in a separate clearly-labelled field."
+            },
+            "steps_estimated": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "Kept separate on purpose. Plan section 12: estimated steps must never masquerade as measured steps or become a fallback exploit for ranked play."
+            }
+          }
+        },
+        "durable": {
+          "type": "boolean",
+          "description": "True only if every sample reached the local encrypted store. If false, the UI must show a partial-session warning. This is the field that makes lost walks visible instead of silent."
+        },
+        "interruptions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/InterruptionReason" },
+          "description": "Every interruption that occurred during the session, in order."
+        }
+      }
+    },
+    "TrackingInterrupted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "session_id", "elapsed_ms", "reason", "recoverable"],
+      "properties": {
+        "type": { "const": "tracking_interrupted" },
+        "session_id": { "$ref": "#/$defs/SessionId" },
+        "elapsed_ms": { "$ref": "#/$defs/MonotonicMs" },
+        "reason": { "$ref": "#/$defs/InterruptionReason" },
+        "recoverable": {
+          "type": "boolean",
+          "description": "Whether tracking can resume without user action. Student B must surface this to the user either way - a silent gap is the worst outcome."
+        },
+        "user_message": {
+          "type": "string",
+          "description": "Plain-language explanation for the user. No blame, no medical framing."
+        }
+      }
+    }
+  }
+}

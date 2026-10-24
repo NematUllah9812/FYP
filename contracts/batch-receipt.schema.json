@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrastep.dev/contracts/batch-receipt.schema.json",
+  "title": "BatchReceipt",
+  "description": "What the server returns from POST /v1/sessions/{id}/batches. Source: Terrastep plan section 16 and 17. A rejection is a reasoned verification outcome, NOT deletion of the user's personal record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["receipt_id", "idempotency_key", "state", "evaluated_at"],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Canonical receipt. Retrying the same idempotency_key returns this same id."
+    },
+    "idempotency_key": { "type": "string" },
+    "state": {
+      "type": "string",
+      "enum": ["accepted", "pending", "partial", "rejected"],
+      "description": "accepted = fully credited. pending = evidence held for later verification. partial = some segments credited, some withheld. rejected = nothing credited. Plan section 17: commit the transaction BEFORE producing any client result that implies an award."
+    },
+    "credited_minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Competitive minutes credited after caps. May legitimately be zero while the walk still counts as fitness. Plan section 10: explain this before the cap, without telling the person to keep exercising."
+    },
+    "recorded_minutes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total minutes recorded as personal fitness, capped or not. Recorded distance and ranked minutes can differ legitimately and the UI must explain why."
+    },
+    "cells_affected": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "H3 cell IDs as TEXT. JavaScript cannot hold a 64-bit integer safely, so H3 ids are text at every API boundary. Plan section 15."
+    },
+    "evaluated_at": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "sequence_gap",
+              "non_monotonic",
+              "duplicate_receipt",
+              "idempotency_conflict",
+              "ticket_expired",
+              "device_mismatch",
+              "rule_version_mismatch",
+              "accuracy_too_low",
+              "implausible_speed",
+              "cell_attribution_withheld",
+              "daily_cell_cap_reached",
+              "daily_user_cap_reached",
+              "outside_pilot_region",
+              "safety_mask_excluded",
+              "evidence_expired",
+              "integrity_review"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Plain language, safe to show the user. Never reveals detection thresholds - plan section 18 keeps those internal."
+          },
+          "sequence": {
+            "type": ["integer", "null"],
+            "description": "Which sample the reason applies to, when applicable."
+          }
+        }
+      },
+      "description": "Empty when state is accepted with nothing withheld. Never empty when state is rejected."
+    },
+    "risk_state": {
+      "type": ["string", "null"],
+      "enum": ["normal", "review", "fitness_only", null],
+      "description": "Plan section 18: fitness_only means personal tracking continues but ranked awards pause. This is an explainable state with an appeal path, never a silent ban and never a public accusation."
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "A rejection or partial credit with no stated reason is an unexplained failure. Plan section 16: rejection is a reasoned verification outcome. The client cannot show the user anything useful without a reason, and nobody can debug without one.",
+      "if": {
+        "properties": { "state": { "enum": ["rejected", "partial"] } },
+        "required": ["state"]
+      },
+      "then": {
+        "required": ["reasons"],
+        "properties": { "reasons": { "minItems": 1 } }
+      }
+    }
+  ]
+}

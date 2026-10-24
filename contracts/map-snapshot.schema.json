@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terrastep.dev/contracts/map-snapshot.schema.json",
+  "title": "MapSnapshot",
+  "description": "What GET /v1/regions/{id}/cells returns. Student C produces this; Student B renders it. Source: Terrastep plan section 15 (access boundaries) and section 19 (location privacy). This is a SANITIZED PROJECTION, not the ownership table. Plan section 19: the privacy projection is part of the API contract, not a visual filter applied after downloading full data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["region_id", "as_of", "cursor", "cells"],
+  "properties": {
+    "region_id": {
+      "type": "string",
+      "description": "An explicitly versioned cell set. Plan section 11: fix pilot region membership as an explicit versioned cell set; H3 parent-child membership is logically exact but parent outlines do not exactly enclose the union of child boundaries."
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$",
+      "description": "Freshness time. Public projections carry a privacy delay of at least 30 minutes after the session ends (plan section 19). Always show this to the user so a stale map is never mistaken for a live one."
+    },
+    "cursor": {
+      "type": "string",
+      "description": "Version cursor. Pass it back to fetch only changes since this snapshot. Plan section 14: batch changes and provide a version cursor."
+    },
+    "h3_resolution": {
+      "type": "integer",
+      "const": 9,
+      "description": "Fixed at 9 for the pilot (~0.1053 km^2 average hexagon, ~200.8 m average edge). Plan section 11: never mix resolutions within one competition without an explicit migration."
+    },
+    "cells": {
+      "type": "array",
+      "maxItems": 5000,
+      "description": "Sparse. Only occupied or masked cells appear - never billions of pre-created world rows (plan section 11).",
+      "items": { "$ref": "#/$defs/Cell" }
+    }
+  },
+  "$defs": {
+    "Cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["h3_id", "version"],
+      "properties": {
+        "h3_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{15,16}$",
+          "description": "Lowercase hex H3 index as TEXT. Never a JSON number."
+        },
+        "owner": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "description": "Null for a neutral cell. Plan section 19: a nickname is not anonymity, and repeated public cell ownership can reveal home, workplace and routines. Only the fields below are ever exposed - no user id, no last-seen time, no capture history.",
+          "required": ["nickname"],
+          "properties": {
+            "nickname": { "type": "string", "maxLength": 32 },
+            "avatar_ref": {
+              "type": ["string", "null"],
+              "description": "A reference to a re-encoded, EXIF-stripped image. Plan section 15: validate file types and sizes, re-encode, strip EXIF location metadata before publication."
+            },
+            "kingdom_name": { "type": ["string", "null"], "maxLength": 40 }
+          }
+        },
+        "score_micro": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+$",
+          "description": "Effective score in fixed-point micro-points (score x 1e6), as a digit string. Deliberately text, for the same reason H3 ids are text: JSON Schema's `integer` type accepts 8.0, and once a float touches a score, replays stop being bit-identical. Plan section 9 requires fixed-point. The client parses to a 64-bit integer and divides by 1e6 for display."
+        },
+        "color": {
+          "type": ["string", "null"],
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "description": "Server-assigned display colour, so the client cannot fingerprint owners by choosing colours."
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Increments on every ownership change. Consumers deduplicate by event id and version - delivery may repeat (plan section 17, at-least-once with idempotent effects)."
+        },
+        "masked": {
+          "type": "boolean",
+          "description": "True when excluded from ranked contribution - water, high-speed road, restricted location, or a locally reported hazard. Plan section 11. A masked cell still renders; it simply cannot be captured."
+        },
+        "mask_reason": {
+          "type": ["string", "null"],
+          "enum": ["water", "high_speed_road", "restricted", "reported_hazard", null]
+        },
+        "pending": {
+          "type": "boolean",
+          "description": "True when the current user has an unverified claim on this cell. Plan section 10: the app may show provisional progress but must NOT announce a verified capture while offline."
+        }
+      }
+    }
+  }
+}

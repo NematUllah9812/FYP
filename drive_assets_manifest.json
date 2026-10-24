@@ -1,0 +1,208 @@
+{
+  "project": "TerraSteps",
+  "milestone": "30% FYP Defense",
+  "drive_root_folder": {
+    "id": "1bK6ZDWU1f8YV1edsHKMjzwSwm5a5OjEa",
+    "name": "TerraSteps - FYP",
+    "url": "https://drive.google.com/drive/folders/1bK6ZDWU1f8YV1edsHKMjzwSwm5a5OjEa"
+  },
+  "folders": {
+    "brand_and_map_assets": {
+      "id": "1yAbuYZeLmvgRQEMsx6_zY5HGnYFJFM5a",
+      "name": "01_Brand_&_Map_Assets",
+      "url": "https://drive.google.com/drive/folders/1yAbuYZeLmvgRQEMsx6_zY5HGnYFJFM5a"
+    },
+    "gpx_benchmark_datasets": {
+      "id": "1_RR_WluVqZOSuZLBFPmh_DeiQQ6c-blP",
+      "name": "02_GPX_Benchmark_Datasets",
+      "url": "https://drive.google.com/drive/folders/1_RR_WluVqZOSuZLBFPmh_DeiQQ6c-blP"
+    },
+    "offline_h3_geojson_packs": {
+      "id": "1bZASUegX2VeJhPSKYT2Zk-Oc327YlYc1",
+      "name": "03_Offline_H3_GeoJSON_Packs",
+      "url": "https://drive.google.com/drive/folders/1bZASUegX2VeJhPSKYT2Zk-Oc327YlYc1"
+    },
+    "builds_and_defense_archive": {
+      "id": "1CFPggrz6mH9Bff7-xUZ95XYFstRoesfM",
+      "name": "04_Builds_&_Defense_Archive",
+      "url": "https://drive.google.com/drive/folders/1CFPggrz6mH9Bff7-xUZ95XYFstRoesfM"
+    }
+  },
+  "assets": [
+    {
+      "key": "milestone30_full_source_backup_zip",
+      "name": "terrasteps_fyp_30pct_full_source_backup.zip",
+      "category": "builds_and_defense_archive",
+      "drive_file_id": "10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI",
+      "mime_type": "application/zip",
+      "size_bytes": 614270,
+      "download_url": "https://drive.google.com/uc?id=10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI&export=download",
+      "view_url": "https://drive.google.com/file/d/10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI/view?usp=drivesdk",
+      "description": "Full source code backup archive of TerraSteps 30% FYP Milestone."
+    },
+    {
+      "key": "milestone30_arm64_release_apk",
+      "name": "terrasteps-milestone30-v0.3.0-arm64-v8a-release.apk",
+      "category": "builds_and_defense_archive",
+      "drive_file_id": "1mOUQV796IEjwVng_gS21zbKxEj509kH2",
+      "mime_type": "application/vnd.android.package-archive",
+      "size_bytes": 43020147,
+      "sha256": "7dd98bfc69fd2f8a4bd45071bdb8dacbd61b25e9549c244cff30f140f3f721bc",
+      "download_url": "https://drive.google.com/uc?id=1mOUQV796IEjwVng_gS21zbKxEj509kH2&export=download",
+      "view_url": "https://drive.google.com/file/d/1mOUQV796IEjwVng_gS21zbKxEj509kH2/view?usp=drivesdk",
+      "description": "Freshly compiled TerraSteps v0.3.0 (30% FYP Milestone) Android arm64-v8a Release APK (Flutter 3.27.4 + Mapbox SDK v11 + Drift SQLite + H3 Res-9)."
+    },
+    {
+      "key": "app_icon_master",
+      "category": "brand_and_map_assets",
+      "name": "terrasteps_app_icon_master.png",
+      "file_id": "1M7qKLfSbB36SY88wRI1YtysEyv8ulxeX",
+      "mime_type": "image/png",
+      "size_bytes": 2333155,
+      "download_url": "https://drive.google.com/uc?id=1M7qKLfSbB36SY88wRI1YtysEyv8ulxeX&export=download",
+      "view_url": "https://drive.google.com/file/d/1M7qKLfSbB36SY88wRI1YtysEyv8ulxeX/view"
+    },
+    {
+      "key": "splash_hero_master",
+      "category": "brand_and_map_assets",
+      "name": "terrasteps_splash_hero.png",
+      "file_id": "12H8ps6-En0DjT_0QMABn9x1GSJhYK-HW",
+      "mime_type": "image/png",
+      "size_bytes": 3701857,
+      "download_url": "https://drive.google.com/uc?id=12H8ps6-En0DjT_0QMABn9x1GSJhYK-HW&export=download",
+      "view_url": "https://drive.google.com/file/d/12H8ps6-En0DjT_0QMABn9x1GSJhYK-HW/view"
+    },
+    {
+      "key": "hex_crest_master",
+      "category": "brand_and_map_assets",
+      "name": "terrasteps_hex_crest.png",
+      "file_id": "1LcygbZD2n_pskTkxsO93ES594G923Flr",
+      "mime_type": "image/png",
+      "size_bytes": 2016036,
+      "download_url": "https://drive.google.com/uc?id=1LcygbZD2n_pskTkxsO93ES594G923Flr&export=download",
+      "view_url": "https://drive.google.com/file/d/1LcygbZD2n_pskTkxsO93ES594G923Flr/view"
+    },
+    {
+      "key": "gpx_abbottabad_valid_walk",
+      "category": "gpx_benchmark_datasets",
+      "name": "abbottabad_campus_conquest_1hz_valid.gpx",
+      "file_id": "1PUuugvaRszHedY7HpKz6ksdIeF-ICXrN",
+      "mime_type": "application/gpx+xml",
+      "size_bytes": 1803853,
+      "metrics": {
+        "points": 2701,
+        "steps": 5326,
+        "distance_m": 3531,
+        "calories_kcal": 229.23,
+        "unique_h3_cells": 9,
+        "expected_verdict": "ACCEPTED"
+      },
+      "download_url": "https://drive.google.com/uc?id=1PUuugvaRszHedY7HpKz6ksdIeF-ICXrN&export=download",
+      "view_url": "https://drive.google.com/file/d/1PUuugvaRszHedY7HpKz6ksdIeF-ICXrN/view"
+    },
+    {
+      "key": "gpx_naaldwijk_valid_run",
+      "category": "gpx_benchmark_datasets",
+      "name": "naaldwijk_endurance_run_1hz_valid.gpx",
+      "file_id": "1HvfiUxNHEaP8GzmV_zG7Ye7xfnw_2xKL",
+      "mime_type": "application/gpx+xml",
+      "size_bytes": 1596003,
+      "metrics": {
+        "points": 2401,
+        "steps": 6393,
+        "distance_m": 5637,
+        "calories_kcal": 403.2,
+        "unique_h3_cells": 17,
+        "expected_verdict": "ACCEPTED"
+      },
+      "download_url": "https://drive.google.com/uc?id=1HvfiUxNHEaP8GzmV_zG7Ye7xfnw_2xKL&export=download",
+      "view_url": "https://drive.google.com/file/d/1HvfiUxNHEaP8GzmV_zG7Ye7xfnw_2xKL/view"
+    },
+    {
+      "key": "gpx_vehicle_spoof_anomaly",
+      "category": "gpx_benchmark_datasets",
+      "name": "referee_anomaly_vehicle_spoof_48kmh.gpx",
+      "file_id": "1PgoiCmt7pxo67BHYOiURoqOGgv-fl42j",
+      "mime_type": "application/gpx+xml",
+      "size_bytes": 599302,
+      "metrics": {
+        "points": 901,
+        "steps": 36,
+        "distance_m": 11099,
+        "calories_kcal": 24.57,
+        "unique_h3_cells": 36,
+        "expected_verdict": "REJECTED_VEHICLE"
+      },
+      "download_url": "https://drive.google.com/uc?id=1PgoiCmt7pxo67BHYOiURoqOGgv-fl42j&export=download",
+      "view_url": "https://drive.google.com/file/d/1PgoiCmt7pxo67BHYOiURoqOGgv-fl42j/view"
+    },
+    {
+      "key": "gpx_phone_shake_anomaly",
+      "category": "gpx_benchmark_datasets",
+      "name": "referee_anomaly_stationary_phone_shake.gpx",
+      "file_id": "1b5Lz3WUZedC2tPlGJop1fokK59AMZ2PO",
+      "mime_type": "application/gpx+xml",
+      "size_bytes": 401729,
+      "metrics": {
+        "points": 601,
+        "steps": 1800,
+        "distance_m": 24,
+        "calories_kcal": 16.38,
+        "unique_h3_cells": 1,
+        "expected_verdict": "REJECTED_SHAKE"
+      },
+      "download_url": "https://drive.google.com/uc?id=1b5Lz3WUZedC2tPlGJop1fokK59AMZ2PO&export=download",
+      "view_url": "https://drive.google.com/file/d/1b5Lz3WUZedC2tPlGJop1fokK59AMZ2PO/view"
+    },
+    {
+      "key": "gpx_ground_truth_csv",
+      "category": "gpx_benchmark_datasets",
+      "name": "ground_truth_metrics.csv",
+      "file_id": "1V5HXICC6e5dDAUvcDRVKItFtZcZELiBk",
+      "mime_type": "text/csv",
+      "size_bytes": 390,
+      "download_url": "https://drive.google.com/uc?id=1V5HXICC6e5dDAUvcDRVKItFtZcZELiBk&export=download",
+      "view_url": "https://drive.google.com/file/d/1V5HXICC6e5dDAUvcDRVKItFtZcZELiBk/view"
+    },
+    {
+      "key": "h3_pack_abbottabad_res9",
+      "category": "offline_h3_geojson_packs",
+      "name": "abbottabad_pilot_res9_2437hexes.geojson",
+      "file_id": "1jJNWqAZGc8jJHR4PDWGghp-TaoQSHQiS",
+      "mime_type": "application/geo+json",
+      "size_bytes": 1374837,
+      "download_url": "https://drive.google.com/uc?id=1jJNWqAZGc8jJHR4PDWGghp-TaoQSHQiS&export=download",
+      "view_url": "https://drive.google.com/file/d/1jJNWqAZGc8jJHR4PDWGghp-TaoQSHQiS/view"
+    },
+    {
+      "key": "h3_pack_south_holland_res9",
+      "category": "offline_h3_geojson_packs",
+      "name": "south_holland_res9_2437hexes.geojson",
+      "file_id": "1fnnEfHpexwCqn935h1BEXqAxwbktYOpf",
+      "mime_type": "application/geo+json",
+      "size_bytes": 1392213,
+      "download_url": "https://drive.google.com/uc?id=1fnnEfHpexwCqn935h1BEXqAxwbktYOpf&export=download",
+      "view_url": "https://drive.google.com/file/d/1fnnEfHpexwCqn935h1BEXqAxwbktYOpf/view"
+    },
+    {
+      "key": "gpx_corpus_zip",
+      "category": "builds_and_defense_archive",
+      "name": "terrasteps_30pct_gpx_benchmark_corpus.zip",
+      "file_id": "1pAzFxlvxqDG4XK4juK_4M0Qo4PvE0Ocj",
+      "mime_type": "application/zip",
+      "size_bytes": 192030,
+      "download_url": "https://drive.google.com/uc?id=1pAzFxlvxqDG4XK4juK_4M0Qo4PvE0Ocj&export=download",
+      "view_url": "https://drive.google.com/file/d/1pAzFxlvxqDG4XK4juK_4M0Qo4PvE0Ocj/view"
+    },
+    {
+      "key": "prototype_debug_apk",
+      "category": "builds_and_defense_archive",
+      "name": "terrastep-prototype-v0.1.10-debug.apk",
+      "file_id": "14xGQ7LnRoTplVL6fgovk_MR0rX5WB6Db",
+      "mime_type": "application/vnd.android.package-archive",
+      "size_bytes": 47545950,
+      "download_url": "https://drive.google.com/uc?id=14xGQ7LnRoTplVL6fgovk_MR0rX5WB6Db&export=download",
+      "view_url": "https://drive.google.com/file/d/14xGQ7LnRoTplVL6fgovk_MR0rX5WB6Db/view"
+    }
+  ]
+}

@@ -130,7 +130,7 @@ class _MapboxConquestScreenState extends State<MapboxConquestScreen> {
       LineLayer(
         id: _routeLayerId,
         sourceId: _routeSourceId,
-        lineColor: const Color(0xFFFACC15).toARGB32(),
+        lineColor: 0xFFFACC15,
         lineWidth: 3.5,
         lineDasharray: const [2.0, 1.5],
       ),
@@ -143,7 +143,7 @@ class _MapboxConquestScreenState extends State<MapboxConquestScreen> {
         sourceId: _trailSourceId,
         lineJoin: LineJoin.ROUND,
         lineCap: LineCap.ROUND,
-        lineColor: const Color(0xFF38BDF8).toARGB32(),
+        lineColor: 0xFF38BDF8,
         lineWidth: 4.8,
       ),
     );

@@ -12,6 +12,9 @@
 .drive_cache/
 .drive_upload_tmp/
 *.apk
+!releases/
+!releases/*.apk
+!releases/*.txt
 *.aab
 *.ipa
 *.zip

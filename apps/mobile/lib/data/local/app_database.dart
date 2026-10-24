@@ -22,11 +22,16 @@ class AppDatabase extends GeneratedDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   /// Named reactive table hooks so Drift stream queries auto-emit on writes.
-  late final CustomTable _userProfileTable = CustomTable('user_profile');
-  late final CustomTable _sessionsTable = CustomTable('workout_sessions');
-  late final CustomTable _trackPointsTable = CustomTable('track_points');
-  late final CustomTable _hexEffortTable = CustomTable('local_hex_effort');
-  late final CustomTable _cachedHexesTable = CustomTable('cached_map_hexes');
+  late final DriftTableHook _userProfileTable =
+      DriftTableHook(this, 'user_profile');
+  late final DriftTableHook _sessionsTable =
+      DriftTableHook(this, 'workout_sessions');
+  late final DriftTableHook _trackPointsTable =
+      DriftTableHook(this, 'track_points');
+  late final DriftTableHook _hexEffortTable =
+      DriftTableHook(this, 'local_hex_effort');
+  late final DriftTableHook _cachedHexesTable =
+      DriftTableHook(this, 'cached_map_hexes');
 
   @override
   int get schemaVersion => 1;
@@ -648,38 +653,27 @@ class AppDatabase extends GeneratedDatabase {
   }
 }
 
-class CustomTable extends Table implements TableInfo<Table, Object?> {
+class DriftTableHook extends ResultSetImplementation<DriftTableHook, Object?> {
   @override
-  final String actualTableName;
-
-  CustomTable(this.actualTableName);
+  final DatabaseConnectionUser attachedDatabase;
 
   @override
-  String get aliasedName => actualTableName;
+  final String entityName;
+
+  DriftTableHook(this.attachedDatabase, this.entityName);
+
+  @override
+  DriftTableHook get asDslTable => this;
+
   @override
   List<GeneratedColumn<Object>> get $columns => const [];
+
   @override
   Map<String, GeneratedColumn<Object>> get columnsByName => const {};
+
   @override
-  Table get asDslTable => this;
-  @override
-  Set<GeneratedColumn<Object>> get $primaryKey => const {};
-  @override
-  List<Set<GeneratedColumn<Object>>> get uniqueKeys => const [];
-  @override
-  bool get withoutRowId => false;
-  @override
-  bool get isStrict => false;
-  @override
-  FutureOr<Object?> map(Map<String, dynamic> data, {String? tablePrefix}) => data;
-  @override
-  TableInfo<Table, Object?> createAlias(String alias) => CustomTable(alias);
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Object?> instance, {
-    bool isInserting = false,
-  }) =>
-      VerificationContext();
+  FutureOr<Object?> map(Map<String, dynamic> data, {String? tablePrefix}) =>
+      data;
 }
 
 class WorkoutSessionRecord {

@@ -107,6 +107,7 @@ for bname in ("android/app/build.gradle", "android/app/build.gradle.kts"):
         btxt = re.sub(r"minSdkVersion\s+flutter\.minSdkVersion", "minSdkVersion 24", btxt)
         btxt = re.sub(r"targetSdk\s*=?\s*flutter\.targetSdkVersion", "targetSdk = 35", btxt)
         btxt = re.sub(r"targetSdkVersion\s+flutter\.targetSdkVersion", "targetSdkVersion 35", btxt)
+        btxt = re.sub(r"jvmTarget\s*=\s*JavaVersion\.VERSION_1_8(?:\.toString\(\))?", 'jvmTarget = "1.8"', btxt)
         bpath.write_text(btxt, encoding="utf-8")
         print(f"Patched {bname} -> compileSdk 35, minSdk 24, targetSdk 35, NDK 27.0.12077973")
 PY

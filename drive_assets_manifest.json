@@ -30,6 +30,29 @@
   },
   "assets": [
     {
+      "key": "milestone30_full_source_backup_zip",
+      "name": "terrasteps_fyp_30pct_full_source_backup.zip",
+      "category": "builds_and_defense_archive",
+      "drive_file_id": "10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI",
+      "mime_type": "application/zip",
+      "size_bytes": 614270,
+      "download_url": "https://drive.google.com/uc?id=10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI&export=download",
+      "view_url": "https://drive.google.com/file/d/10ZlEb0R2OC-vQrkxdA0bxxz6Ji6otfnI/view?usp=drivesdk",
+      "description": "Full source code backup archive of TerraSteps 30% FYP Milestone."
+    },
+    {
+      "key": "milestone30_arm64_release_apk",
+      "name": "terrasteps-milestone30-v0.3.0-arm64-v8a-release.apk",
+      "category": "builds_and_defense_archive",
+      "drive_file_id": "1mOUQV796IEjwVng_gS21zbKxEj509kH2",
+      "mime_type": "application/vnd.android.package-archive",
+      "size_bytes": 43020147,
+      "sha256": "7dd98bfc69fd2f8a4bd45071bdb8dacbd61b25e9549c244cff30f140f3f721bc",
+      "download_url": "https://drive.google.com/uc?id=1mOUQV796IEjwVng_gS21zbKxEj509kH2&export=download",
+      "view_url": "https://drive.google.com/file/d/1mOUQV796IEjwVng_gS21zbKxEj509kH2/view?usp=drivesdk",
+      "description": "Freshly compiled TerraSteps v0.3.0 (30% FYP Milestone) Android arm64-v8a Release APK (Flutter 3.27.4 + Mapbox SDK v11 + Drift SQLite + H3 Res-9)."
+    },
+    {
       "key": "app_icon_master",
       "category": "brand_and_map_assets",
       "name": "terrasteps_app_icon_master.png",

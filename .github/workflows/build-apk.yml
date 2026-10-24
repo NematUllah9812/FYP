@@ -1,0 +1,127 @@
+name: Build TerraSteps Android APK & Run Tests
+
+on:
+  push:
+    branches:
+      - main
+      - "arena/**"
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mapbox_public_token:
+        description: "Optional Mapbox pk.* public token baked into --dart-define"
+        required: false
+        default: ""
+
+jobs:
+  build-apk:
+    name: Flutter 3.27.4 Tests + Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter 3.27.4
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.27.4"
+          channel: stable
+          cache: true
+
+      - name: Validate JSON Schema contracts
+        run: |
+          pip install --quiet jsonschema referencing
+          python3 contracts/validate_contracts.py
+
+      - name: Test Deliverable 1 package (terrasteps_gpx)
+        working-directory: packages/terrasteps_gpx
+        run: |
+          dart pub get
+          dart test
+
+      - name: Test Deliverable 2 package (terrasteps_fitness)
+        working-directory: packages/terrasteps_fitness
+        run: |
+          dart pub get
+          dart test
+
+      - name: Generate Android runner & patch Manifest + Gradle for Mapbox v11
+        working-directory: apps/mobile
+        run: |
+          cp pubspec.yaml /tmp/pubspec.backup
+          flutter create --platforms=android \
+            --org io.terrasteps \
+            --project-name terrasteps_mobile . 2>&1 | tail -20
+          cp /tmp/pubspec.backup pubspec.yaml
+          rm -f test/widget_test.dart
+          bash ../../scripts/patch_android_manifest.sh
+
+      - name: Resolve mobile dependencies & run smoke tests
+        working-directory: apps/mobile
+        run: |
+          set -o pipefail
+          flutter pub get 2>&1 | tee /tmp/pubget.log
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee /tmp/analyze.log || true
+          flutter test
+
+      - name: Build TerraSteps 30% Milestone Debug APK
+        working-directory: apps/mobile
+        env:
+          MAPBOX_TOKEN: ${{ inputs.mapbox_public_token || vars.MAPBOX_ACCESS_TOKEN || '' }}
+        run: |
+          set -o pipefail
+          flutter build apk --debug \
+            --dart-define=SUPABASE_URL=https://iaoqwxcyjkpvpqwoszih.supabase.co \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_sNduqq3F-AmpOI1olS2zkA_2zIouLeP \
+            --dart-define=MAPBOX_ACCESS_TOKEN="${MAPBOX_TOKEN}" \
+            2>&1 | tee /tmp/build.log
+
+      - name: Stage APK artifact
+        run: |
+          mkdir -p dist-apk
+          cp apps/mobile/build/app/outputs/flutter-apk/app-debug.apk \
+             "dist-apk/terrasteps-milestone30-v0.3.0-b${{ github.run_number }}-debug.apk"
+          sha256sum dist-apk/*.apk > dist-apk/SHA256SUMS.txt
+          ls -lh dist-apk/
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrasteps-milestone30-debug-apk
+          path: dist-apk/*
+          retention-days: 60
+          if-no-files-found: error
+
+      - name: Upload Build Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terrasteps-build-logs
+          path: |
+            /tmp/pubget.log
+            /tmp/analyze.log
+            /tmp/build.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Build Job Summary
+        if: always()
+        run: |
+          if [ -d dist-apk ] && ls dist-apk/*.apk >/dev/null 2>&1; then
+            echo "### ✅ TerraSteps 30% Milestone APK Built" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Artifact:** \`terrasteps-milestone30-debug-apk\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Size:** $(du -h dist-apk/*.apk | cut -f1)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **SHA-256:** \`$(cat dist-apk/SHA256SUMS.txt)\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ❌ Build Failed — Tail of Logs" >> "$GITHUB_STEP_SUMMARY"
+            [ -f /tmp/pubget.log ] && { echo '```'; tail -40 /tmp/pubget.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            [ -f /tmp/build.log ] && { echo '```'; tail -60 /tmp/build.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -1,0 +1,56 @@
+name: terrasteps_mobile
+description: >-
+  TerraSteps — Gamified H3 Hex-Conquest Outdoor Fitness App (30% FYP Milestone).
+  Flutter + Drift SQLite + Mapbox Maps SDK + Supabase Edge Functions & PostGIS.
+publish_to: "none"
+version: 0.3.0+30
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core modular FYP packages (Deliverables 1 & 2)
+  terrasteps_fitness:
+    path: ../../packages/terrasteps_fitness
+  terrasteps_gpx:
+    path: ../../packages/terrasteps_gpx
+
+  # Deliverable 3: Mapbox Maps SDK + Uber H3 Spatial Index (Resolution 9)
+  mapbox_maps_flutter: ">=2.18.0 <2.20.0"
+  h3_flutter: ">=0.7.1 <0.8.0"
+
+  # Deliverable 1 & 2: Offline-first Drift SQLite persistence & file system
+  drift: ">=2.20.0 <2.23.0"
+  sqlite3_flutter_libs: ">=0.5.24 <0.6.0"
+  path_provider: ">=2.1.4 <2.2.0"
+  path: ">=1.9.0 <2.0.0"
+
+  # Hardware GPS & Step Counter sensors
+  geolocator: ">=13.0.4 <14.0.0"
+  pedometer: ">=4.0.2 <4.1.0"
+  permission_handler: ">=11.3.1 <11.4.0"
+
+  # Supabase Auth, PostgreSQL RPCs & Edge Function Map API + Share export
+  supabase_flutter: ">=2.8.4 <2.9.0"
+  http: ">=1.2.2 <2.0.0"
+  share_plus: ">=10.1.0 <10.2.0"
+  uuid: ">=4.5.0 <5.0.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ">=4.0.0 <6.0.0"
+
+dependency_overrides:
+  js: 0.7.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/app_icon.png
+    - assets/images/hex_crest.png
+    - assets/images/hero_banner.jpg
+    - assets/drive_assets_manifest.json

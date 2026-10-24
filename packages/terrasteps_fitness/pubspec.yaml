@@ -1,0 +1,13 @@
+name: terrasteps_fitness
+description: >-
+  Pure-Dart hardware step counter offset engine, METs calorie calculator,
+  stride estimator, and H3 Resolution-9 hex effort aggregator (Deliverable 2).
+version: 0.3.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dev_dependencies:
+  test: ">=1.25.0 <2.0.0"
+  lints: ">=4.0.0 <6.0.0"
